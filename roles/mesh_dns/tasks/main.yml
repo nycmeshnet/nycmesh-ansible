@@ -17,9 +17,9 @@
       ansible.builtin.lineinfile:
         dest: /etc/systemd/resolved.conf
         regexp: '^#?\s*FallbackDNS='
-        line: 'FallbackDNS={{ BACKUP_RESOLVERS }}'
+        line: 'FallbackDNS={{ backup_resolvers }}'
         state: present
-      when: (BACKUP_RESOLVERS is defined) and (BACKUP_RESOLVERS|length > 0)
+      when: (backup_resolvers is defined) and (backup_resolvers|length > 0)
 
     - name: Disable LLMNR
       ansible.builtin.lineinfile:
