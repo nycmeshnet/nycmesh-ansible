@@ -1,0 +1,46 @@
+- name: Populate service facts
+  ansible.builtin.service_facts:
+  become: true
+
+- name: Setup dns for systemd-resolved
+  when: "'systemd-resolved.service' in services"
+  become: true
+  block:
+    - name: Set primary DNS to 10.10.10.10 and 10.10.10.11
+      ansible.builtin.lineinfile:
+        dest: /etc/systemd/resolved.conf
+        regexp: '^#?\s*DNS='
+        line: 'DNS=10.10.10.10 10.10.10.11'
+        state: present
+
+    - name: Set fallback DNS to 9.9.9.9
+      ansible.builtin.lineinfile:
+        dest: /etc/systemd/resolved.conf
+        regexp: '^#?\s*FallbackDNS='
+        line: 'FallbackDNS=9.9.9.9'
+        state: present
+
+    - name: Disable LLMNR
+      ansible.builtin.lineinfile:
+        dest: /etc/systemd/resolved.conf
+        regexp: '^#?\s*LLMNR='
+        line: 'LLMNR=no'
+        state: present
+
+    - name: Disable Multicast DNS
+      ansible.builtin.lineinfile:
+        dest: /etc/systemd/resolved.conf
+        regexp: '^#?\s*MulticastDNS='
+        line: 'MulticastDNS=no'
+        state: present
+
+    - name: Restart and enable systemd-resolved service
+      ansible.builtin.systemd_service:
+        name: systemd-resolved
+        state: restarted
+        enabled: true
+
+- name: Fail not supported
+  ansible.builtin.fail:
+    msg: Only systemd-resolved is supported. Are you in an LXC?
+  when: "'systemd-resolved.service' not in services"
