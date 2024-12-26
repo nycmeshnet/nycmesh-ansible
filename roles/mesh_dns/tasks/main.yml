@@ -19,7 +19,7 @@
         regexp: '^#?\s*FallbackDNS='
         line: 'FallbackDNS={{ BACKUP_RESOLVERS }}'
         state: present
-      when: BACKUP_RESOLVERS != ""
+      when: (BACKUP_RESOLVERS is defined) and (BACKUP_RESOLVERS|length > 0)
 
     - name: Disable LLMNR
       ansible.builtin.lineinfile:
