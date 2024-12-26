@@ -1,0 +1,63 @@
+- name: Populate service facts
+  ansible.builtin.service_facts:
+  become: true
+
+- name: Setup dns for systemd-resolved
+  when: "'systemd-resolved.service' in services"
+  become: true
+  block:
+    - name: Set primary DNS to only 10.10.10.10 and 10.10.10.11
+      ansible.builtin.lineinfile:
+        dest: /etc/systemd/resolved.conf
+        regexp: '^#?\s*DNS='
+        line: 'DNS=10.10.10.10 10.10.10.11'
+        state: present
+      when: not ((extra_resolvers is defined) and (extra_resolvers|length > 0))
+
+    - name: Set primary DNS to 10.10.10.10, 10.10.10.11 and {{ extra_resolvers }}
+      ansible.builtin.lineinfile:
+        dest: /etc/systemd/resolved.conf
+        regexp: '^#?\s*DNS='
+        line: 'DNS=10.10.10.10 10.10.10.11 {{ extra_resolvers }}'
+        state: present
+      when: (extra_resolvers is defined) and (extra_resolvers|length > 0)
+
+    - name: Set fallback DNS server(s)
+      ansible.builtin.lineinfile:
+        dest: /etc/systemd/resolved.conf
+        regexp: '^#?\s*FallbackDNS='
+        line: 'FallbackDNS={{ backup_resolvers }}'
+        state: present
+      when: (backup_resolvers is defined) and (backup_resolvers|length > 0)
+
+    - name: Disable LLMNR
+      ansible.builtin.lineinfile:
+        dest: /etc/systemd/resolved.conf
+        regexp: '^#?\s*LLMNR='
+        line: 'LLMNR=no'
+        state: present
+      when: not ((use_llmnr is defined) and (use_llmnr|bool))
+
+    - name: Disable Multicast DNS
+      ansible.builtin.lineinfile:
+        dest: /etc/systemd/resolved.conf
+        regexp: '^#?\s*MulticastDNS='
+        line: 'MulticastDNS=no'
+        state: present
+      when: not ((use_multicastdns is defined) and (use_multicastdns|bool))
+
+    - name: Restart and enable systemd-resolved service
+      ansible.builtin.systemd_service:
+        name: systemd-resolved
+        state: restarted
+        enabled: true
+
+- name: Template resolv.conf
+  ansible.builtin.template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+    mode: "644"
+    owner: "root"
+    group: "root"
+  become: true
+  when: "'systemd-resolved.service' not in services"
