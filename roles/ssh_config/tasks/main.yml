@@ -4,9 +4,11 @@
     regexp: '^#?\s*PasswordAuthentication\s'
     line: 'PasswordAuthentication no'
     state: present
+  become: true
 
 - name: Restart and enable sshd service
   ansible.builtin.service:
     name: sshd
     state: reloaded
     enabled: true
+  become: true

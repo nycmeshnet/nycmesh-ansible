@@ -10,3 +10,4 @@
     password: "{{ LOCAL_PASSWORD | password_hash('sha512') }}"
     groups: sudo
   when: LOCAL_PASSWORD | length > 8
+  become: true
