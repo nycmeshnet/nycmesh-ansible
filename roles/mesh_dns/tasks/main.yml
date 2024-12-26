@@ -27,6 +27,7 @@
         regexp: '^#?\s*LLMNR='
         line: 'LLMNR=no'
         state: present
+      when: not ((use_llmnr is defined) and (use_llmnr|bool))
 
     - name: Disable Multicast DNS
       ansible.builtin.lineinfile:
@@ -34,6 +35,7 @@
         regexp: '^#?\s*MulticastDNS='
         line: 'MulticastDNS=no'
         state: present
+      when: not ((use_multicastdns is defined) and (use_multicastdns|bool))
 
     - name: Restart and enable systemd-resolved service
       ansible.builtin.systemd_service:
