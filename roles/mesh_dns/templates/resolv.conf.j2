@@ -1,7 +1,7 @@
 nameserver 10.10.10.10
 nameserver 10.10.10.11
-{% if (backup_resolvers is defined) and (backup_resolvers|length > 0) %}
-{% set backups = backup_resolvers.split(' ') %}
+{% if (extra_resolvers is defined) and (extra_resolvers|length > 0) %}
+{% set backups = extra_resolvers.split(' ') %}
 {% for b in backups %}
 nameserver {{ b }}
 {% endfor %}

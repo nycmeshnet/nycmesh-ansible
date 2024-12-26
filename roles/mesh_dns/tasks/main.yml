@@ -6,12 +6,21 @@
   when: "'systemd-resolved.service' in services"
   become: true
   block:
-    - name: Set primary DNS to 10.10.10.10 and 10.10.10.11
+    - name: Set primary DNS to only 10.10.10.10 and 10.10.10.11
       ansible.builtin.lineinfile:
         dest: /etc/systemd/resolved.conf
         regexp: '^#?\s*DNS='
         line: 'DNS=10.10.10.10 10.10.10.11'
         state: present
+      when: not ((extra_resolvers is defined) and (extra_resolvers|length > 0))
+
+    - name: Set primary DNS to 10.10.10.10, 10.10.10.11 and {{ extra_resolvers }}
+      ansible.builtin.lineinfile:
+        dest: /etc/systemd/resolved.conf
+        regexp: '^#?\s*DNS='
+        line: 'DNS=10.10.10.10 10.10.10.11 {{ extra_resolvers }}'
+        state: present
+      when: (extra_resolvers is defined) and (extra_resolvers|length > 0)
 
     - name: Set fallback DNS server(s)
       ansible.builtin.lineinfile:
