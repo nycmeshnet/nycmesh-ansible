@@ -13,12 +13,13 @@
         line: 'DNS=10.10.10.10 10.10.10.11'
         state: present
 
-    - name: Set fallback DNS to 9.9.9.9
+    - name: Set fallback DNS server(s)
       ansible.builtin.lineinfile:
         dest: /etc/systemd/resolved.conf
         regexp: '^#?\s*FallbackDNS='
-        line: 'FallbackDNS=9.9.9.9'
+        line: 'FallbackDNS={{ BACKUP_RESOLVERS }}'
         state: present
+      when: BACKUP_RESOLVERS != ""
 
     - name: Disable LLMNR
       ansible.builtin.lineinfile:
@@ -40,7 +41,11 @@
         state: restarted
         enabled: true
 
-- name: Fail not supported
-  ansible.builtin.fail:
-    msg: Only systemd-resolved is supported. Are you in an LXC?
+- name: Template resolve.conf
+  ansible.builtin.template:
+    src: resolve.conf.j2
+    dest: /etc/resolve.conf
+    mode: "644"
+    owner: "root"
+    group: "root"
   when: "'systemd-resolved.service' not in services"

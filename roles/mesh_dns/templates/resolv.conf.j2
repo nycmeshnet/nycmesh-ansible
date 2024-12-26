@@ -1,0 +1,8 @@
+nameserver 10.10.10.10
+nameserver 10.10.10.11
+{% if BACKUP_RESOLVERS != "" %}
+{% set backups = BACKUP_RESOLVERS.split(' ') %}
+{% for b in backups %}
+nameserver {{ b }}
+{% endfor %}
+{% endif %}
