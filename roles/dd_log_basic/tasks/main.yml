@@ -1,0 +1,35 @@
+- name: Fail if the DATADOG_API_KEY variable is not provided
+  ansible.builtin.fail:
+    msg: The variable DATADOG_API_KEY was not provided
+  when: DATADOG_API_KEY | length < 1
+
+- name: Fail if the VM_HOSTNAME variable is not provided
+  ansible.builtin.fail:
+    msg: The variable VM_HOSTNAME was not provided
+  when: VM_HOSTNAME | length < 1
+
+- name: Setup DD agent to forward systemd-journal
+  when: "'systemd-timesyncd.service' in services"
+  become: true
+  block:
+    - name: Import the Datadog Agent role from the Datadog collection
+      ansible.builtin.import_role:
+        name: datadog.dd.agent
+      vars:
+        datadog_api_key: "{{ DATADOG_API_KEY }}"
+        datadog_site: "{{ DATADOG_SITE | default('us5.datadoghq.com') }}"
+        datadog_config:
+          hostname: "{{ VM_HOSTNAME }}"
+          logs_enabled: true
+        datadog_additional_groups: "systemd-journal"
+        datadog_checks:
+          journald:
+            logs:
+              - type: journald
+                path: /var/log/journal/
+
+    - name: Reload datadog
+      ansible.builtin.systemd_service:
+        name: datadog-agent
+        state: restarted
+        enabled: true

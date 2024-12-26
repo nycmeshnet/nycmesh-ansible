@@ -1,0 +1,25 @@
+- name: Populate service facts
+  ansible.builtin.service_facts:
+  become: true
+
+- name: Setup ntp for systemd-timesyncd
+  when: "'systemd-timesyncd.service' in services"
+  become: true
+  block:
+    - name: Set primary NTP server to 10.10.10.123
+      ansible.builtin.lineinfile:
+        dest: /etc/systemd/timesyncd.conf
+        regexp: '^#?\s*NTP='
+        line: 'NTP=10.10.10.123'
+        state: present
+
+    - name: Restart and enable systemd-timesyncd service
+      ansible.builtin.systemd_service:
+        name: systemd-timesyncd
+        state: restarted
+        enabled: true
+
+- name: Fail not supported
+  ansible.builtin.fail:
+    msg: Only systemd-timesyncd is supported. Are you in an LXC?
+  when: "'systemd-timesyncd.service' not in services"
