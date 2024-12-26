@@ -1,13 +1,13 @@
 - name: Fail if the value is not provided
   ansible.builtin.fail:
-    msg: The variable LOCAL_PASSWORD was not provided
-  when: LOCAL_PASSWORD | length < 9
+    msg: The variable local_password was not provided
+  when: local_password | length < 9
 
 - name: Add the user 'support'
   ansible.builtin.user:
     name: support
     uid: 1001
-    password: "{{ LOCAL_PASSWORD | password_hash('sha512') }}"
+    password: "{{ local_password | password_hash('sha512') }}"
     groups: sudo
-  when: LOCAL_PASSWORD | length > 8
+  when: local_password | length > 8
   become: true
