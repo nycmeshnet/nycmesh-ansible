@@ -41,10 +41,10 @@
         state: restarted
         enabled: true
 
-- name: Template resolve.conf
+- name: Template resolv.conf
   ansible.builtin.template:
-    src: resolve.conf.j2
-    dest: /etc/resolve.conf
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
     mode: "644"
     owner: "root"
     group: "root"
