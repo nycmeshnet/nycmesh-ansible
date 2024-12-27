@@ -9,5 +9,6 @@
     uid: 1001
     password: "{{ local_password | password_hash('sha512') }}"
     groups: sudo
+    shell: /bin/bash
   when: local_password | length > 8
   become: true
