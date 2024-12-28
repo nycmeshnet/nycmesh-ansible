@@ -1,0 +1,24 @@
+# Managed by ansible
+
+certbot_domain="{{ certbot_get_cert_for_domain }}"
+
+/root/certbot_venv/bin/certbot certonly \
+  --dns-rfc2136 \
+  --dns-rfc2136-credentials /root/tsig.ini \
+  --non-interactive \
+  --agree-tos \
+  -m {{ certbot_email_username | default('jameso') }}@nycmesh.net \
+  -d $certbot_domain
+
+full_chain_path="/etc/letsencrypt/live/$certbot_domain/fullchain.pem"
+priv_key_path="/etc/letsencrypt/live/$certbot_domain/privkey.pem"
+
+if [ ! -f "$full_chain_path" ] || [ ! -f "$priv_key_path" ]; then
+  exit 1
+fi
+
+post_update_script="/root/certbot_post_update.sh"
+if [ -f "$post_update_script" ]; then
+  chmod +x "$post_update_script"
+  bash "$post_update_script"
+fi
