@@ -1,4 +1,3 @@
-
 - name: Fail if github_repo is not provided
   ansible.builtin.fail:
     msg: The variable github_repo was not provided
