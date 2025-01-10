@@ -7,7 +7,7 @@
 - name: Template motd
   ansible.builtin.template:
     src: motd.j2
-    dest: /etc/resolv.conf
+    dest: /etc/motd
     mode: "644"
     owner: "root"
     group: "root"
