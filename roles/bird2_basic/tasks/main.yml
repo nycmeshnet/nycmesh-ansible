@@ -26,7 +26,7 @@
 
 - name: Bird systemd unit
   ansible.builtin.template:
-    src: bird.service
+    src: bird.service.j2
     dest: /lib/systemd/system/bird.service
     mode: "0644"
 
