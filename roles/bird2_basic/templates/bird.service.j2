@@ -1,9 +1,10 @@
 [Unit]
 Description=BIRD Internet Routing Daemon
-# Bind to and start after chrony so that the IP is only announced when chrony is running
 #After=network.target
 After=network.target{% if (bird_binds_to_service is defined) and (bird_binds_to_service|length > 0) %},{{ bird_binds_to_service }}
+# Bind to and start after another service so that the IP is only announced when the other service is running
 BindsTo={{ bird_binds_to_service }}{% endif %}
+
 
 [Service]
 EnvironmentFile=/etc/bird/envvars
