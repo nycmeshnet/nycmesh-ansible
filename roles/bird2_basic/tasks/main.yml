@@ -1,0 +1,27 @@
+- name: Install deps
+  ansible.builtin.apt:
+    lock_timeout: 240
+    update_cache: true
+    pkg:
+      - ca-certificates
+      - bird2
+
+- name: Bird config
+  ansible.builtin.template:
+    src: bird.conf.j2
+    dest: /etc/bird/bird.conf
+    mode: "640"
+    owner: "bird"
+    group: "bird"
+
+- name: Bird systemd unit
+  ansible.builtin.copy:
+    src: bird.service
+    dest: /lib/systemd/system/bird.service
+    mode: "0644"
+
+- name: Reload bird
+  ansible.builtin.systemd_service:
+    name: bird
+    state: reloaded
+    enabled: true
