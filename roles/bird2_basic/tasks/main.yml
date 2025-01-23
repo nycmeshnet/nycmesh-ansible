@@ -25,7 +25,7 @@
     group: "bird"
 
 - name: Bird systemd unit
-  ansible.builtin.copy:
+  ansible.builtin.template:
     src: bird.service
     dest: /lib/systemd/system/bird.service
     mode: "0644"
