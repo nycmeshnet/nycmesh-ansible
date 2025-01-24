@@ -35,3 +35,4 @@
     name: bird
     state: reloaded
     enabled: true
+    daemon_reload: true
