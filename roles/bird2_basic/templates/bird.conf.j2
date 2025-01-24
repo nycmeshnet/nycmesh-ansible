@@ -146,7 +146,7 @@ protocol ospf v2 {
 			type broadcast;	# Detected by default
 			cost 10;		# Interface metric
 		};
-        interface "lo" {
+        interface "{{ bird_dummy_interface | default('lo') }}" {
             cost 10;
         };
 	};
