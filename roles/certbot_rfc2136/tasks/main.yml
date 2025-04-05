@@ -45,7 +45,7 @@
 - name: Certbot script
   ansible.builtin.template:
     src: certbot.sh.j2
-    dest: /root/certbot.sh
+    dest: /root/certbot_tsig.sh
     mode: "700"
 
 - name: Template tsig.ini
@@ -56,7 +56,7 @@
 
 - name: Get cert
   ansible.builtin.command:
-    cmd: /root/certbot.sh
+    cmd: /root/certbot_tsig.sh
 
 - name: Crontab
   ansible.builtin.template:
