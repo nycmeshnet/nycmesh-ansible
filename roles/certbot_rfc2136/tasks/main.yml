@@ -44,7 +44,7 @@
 
 - name: Certbot script
   ansible.builtin.template:
-    src: certbot.sh.j2
+    src: certbot_tsig.sh.j2
     dest: /root/certbot_tsig.sh
     mode: "700"
 
