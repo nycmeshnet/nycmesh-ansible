@@ -1,1 +1,2 @@
 certbot_rfc2136/tasks/main.yml no-changed-when
+netplan_loopback/tasks/main.yml no-changed-when

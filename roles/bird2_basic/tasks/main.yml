@@ -1,0 +1,38 @@
+- name: Fail if bird_router_id is not provided
+  ansible.builtin.fail:
+    msg: The variable bird_router_id was not provided
+  when: not ((bird_router_id is defined) and (bird_router_id|length > 0))
+
+- name: Fail if bird_network is not provided
+  ansible.builtin.fail:
+    msg: The variable bird_network was not provided
+  when: not ((bird_network is defined) and (bird_network|length > 0))
+
+- name: Install deps
+  ansible.builtin.apt:
+    lock_timeout: 240
+    update_cache: true
+    pkg:
+      - ca-certificates
+      - bird2
+
+- name: Bird config
+  ansible.builtin.template:
+    src: bird.conf.j2
+    dest: /etc/bird/bird.conf
+    mode: "640"
+    owner: "bird"
+    group: "bird"
+
+- name: Bird systemd unit
+  ansible.builtin.template:
+    src: bird.service.j2
+    dest: /lib/systemd/system/bird.service
+    mode: "0644"
+
+- name: Reload bird
+  ansible.builtin.systemd_service:
+    name: bird
+    state: reloaded
+    enabled: true
+    daemon_reload: true
