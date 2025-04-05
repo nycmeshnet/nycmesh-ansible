@@ -2,7 +2,7 @@
 
 certbot_domain="{{ certbot_get_cert_for_domain }}"
 
-/root/certbot_venv/bin/certbot certonly \
+/root/certbot_venv_tsig/bin/certbot certonly \
   --dns-rfc2136 \
   --dns-rfc2136-credentials /root/tsig.ini \
   --non-interactive \
