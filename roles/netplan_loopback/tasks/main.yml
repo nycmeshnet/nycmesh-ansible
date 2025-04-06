@@ -1,0 +1,14 @@
+- name: Fail if netplan_loopback_ips is not provided
+  ansible.builtin.fail:
+    msg: The variable netplan_loopback_ips was not provided
+  when: not ((netplan_loopback_ips is defined) and (netplan_loopback_ips|length > 0))
+
+- name: Setup IPs on lo interface
+  ansible.builtin.template:
+    src: netplan_loopback.yaml.j2
+    dest: /etc/netplan/lo.yaml
+    mode: "600"
+
+- name: Netplan apply
+  ansible.builtin.command:
+    cmd: "netplan apply"

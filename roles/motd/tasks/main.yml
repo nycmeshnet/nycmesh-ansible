@@ -1,0 +1,13 @@
+- name: Fail if github_repo is not provided
+  ansible.builtin.fail:
+    msg: The variable github_repo was not provided
+  when: not ((github_repo is defined) and (github_repo|length > 0))
+
+- name: Template motd
+  ansible.builtin.template:
+    src: motd.j2
+    dest: /etc/motd
+    mode: "644"
+    owner: "root"
+    group: "root"
+  become: true

@@ -39,7 +39,7 @@
     name:
       - certbot==2.11.0
       - certbot-dns-rfc2136==2.11.0
-    virtualenv: /root/certbot_tsig_venv
+    virtualenv: /root/certbot_venv_tsig
     virtualenv_command: python3 -m venv
 
 - name: Certbot script
