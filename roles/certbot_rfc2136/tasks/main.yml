@@ -39,13 +39,13 @@
     name:
       - certbot==2.11.0
       - certbot-dns-rfc2136==2.11.0
-    virtualenv: /root/certbot_venv
+    virtualenv: /root/certbot_tsig_venv
     virtualenv_command: python3 -m venv
 
 - name: Certbot script
   ansible.builtin.template:
-    src: certbot.sh.j2
-    dest: /root/certbot.sh
+    src: certbot_tsig.sh.j2
+    dest: /root/certbot_tsig.sh
     mode: "700"
 
 - name: Template tsig.ini
@@ -56,12 +56,12 @@
 
 - name: Get cert
   ansible.builtin.command:
-    cmd: /root/certbot.sh
+    cmd: /root/certbot_tsig.sh
 
 - name: Crontab
   ansible.builtin.template:
     src: certbot_update_cert.j2
-    dest: /etc/cron.d/certbot_update_cert
+    dest: /etc/cron.d/certbot_update_cert_tsig
     mode: "700"
 
 - name: Restart and enable cron service
