@@ -11,8 +11,8 @@ certbot_domain="{{ certbot_get_cert_for_domain }}"
   -m {{ certbot_email_username | default('jameso') }}@nycmesh.net \
   -d $certbot_domain
 
-full_chain_path="/etc/letsencrypt/live/$certbot_domain/fullchain.pem"
-priv_key_path="/etc/letsencrypt/live/$certbot_domain/privkey.pem"
+full_chain_path="/etc/letsencrypt/live/tsig_cert/fullchain.pem"
+priv_key_path="/etc/letsencrypt/live/tsig_cert/privkey.pem"
 
 if [ ! -f "$full_chain_path" ] || [ ! -f "$priv_key_path" ]; then
   exit 1
