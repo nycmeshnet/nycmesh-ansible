@@ -1,21 +1,21 @@
 #!/bin/bash
 # Managed by ansible
 
-certbot_domain="{{ certbot_get_cert_for_domain }}"
+CERT_NAME="tsig_cert"
 
 /root/certbot_venv_tsig/bin/certbot certonly \
+  --cert-name $CERT_NAME \
   --dns-rfc2136 \
   --dns-rfc2136-credentials /root/tsig.ini \
-  --non-interactive \
   --text \
   --expand \
-  -m jameso@nycmesh.net \
+  --non-interactive \
   --agree-tos \
   -m {{ certbot_email_username | default('jameso') }}@nycmesh.net \
-  -d $certbot_domain
+  --domain '{{ certbot_get_cert_for_domain }}'
 
-full_chain_path="/etc/letsencrypt/live/tsig_cert/fullchain.pem"
-priv_key_path="/etc/letsencrypt/live/tsig_cert/privkey.pem"
+full_chain_path="/etc/letsencrypt/live/$CERT_NAME/fullchain.pem"
+priv_key_path="/etc/letsencrypt/live/$CERT_NAME/privkey.pem"
 
 if [ ! -f "$full_chain_path" ] || [ ! -f "$priv_key_path" ]; then
   exit 1
