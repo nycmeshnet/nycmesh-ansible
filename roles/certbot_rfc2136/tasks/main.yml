@@ -37,6 +37,8 @@
 - name: Install certbot
   ansible.builtin.pip:
     name:
+      # resolve bug https://github.com/certbot/certbot/issues/10185
+      - josepy==1.15.0
       - certbot==2.11.0
       - certbot-dns-rfc2136==2.11.0
     virtualenv: /root/certbot_venv_tsig
