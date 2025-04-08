@@ -7,6 +7,9 @@ certbot_domain="{{ certbot_get_cert_for_domain }}"
   --dns-rfc2136 \
   --dns-rfc2136-credentials /root/tsig.ini \
   --non-interactive \
+  --text \
+  --expand \
+  -m jameso@nycmesh.net \
   --agree-tos \
   -m {{ certbot_email_username | default('jameso') }}@nycmesh.net \
   -d $certbot_domain
