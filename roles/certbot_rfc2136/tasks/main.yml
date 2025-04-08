@@ -1,0 +1,71 @@
+- name: Check preconditions
+  block:
+    - name: Fail if certbot_update_hour is not provided
+      ansible.builtin.fail:
+        msg: The variable certbot_update_hour was not provided
+      when: not ((certbot_update_hour is defined) and (certbot_update_hour|length > 0))
+
+    - name: Fail if certbot_get_cert_for_domain is not provided
+      ansible.builtin.fail:
+        msg: The variable certbot_get_cert_for_domain was not provided
+      when: not ((certbot_get_cert_for_domain is defined) and (certbot_get_cert_for_domain|length > 0))
+
+    - name: Fail if certbot_tsig_key is not provided
+      ansible.builtin.fail:
+        msg: The variable certbot_tsig_key was not provided
+      when: not ((certbot_tsig_key is defined) and (certbot_tsig_key|length > 0))
+
+    - name: Check/root/certbot_post_update.sh
+      ansible.builtin.stat:
+        path: /root/certbot_post_update.sh
+      register: stat_result
+
+    - name: Fail if /root/certbot_post_update.sh does not exist
+      ansible.builtin.fail:
+        msg: The file /root/certbot_post_update.sh must contain bash to run after certs are updated
+      when: not stat_result.stat.exists
+
+- name: Install deps
+  ansible.builtin.apt:
+    lock_timeout: 120
+    update_cache: true
+    pkg:
+      - python3-pip
+      - python3.11-venv
+      - cron
+
+- name: Install certbot
+  ansible.builtin.pip:
+    name:
+      - certbot==2.11.0
+      - certbot-dns-rfc2136==2.11.0
+    virtualenv: /root/certbot_venv_tsig
+    virtualenv_command: python3 -m venv
+
+- name: Certbot script
+  ansible.builtin.template:
+    src: certbot_tsig.sh.j2
+    dest: /root/certbot_tsig.sh
+    mode: "700"
+
+- name: Template tsig.ini
+  ansible.builtin.template:
+    src: tsig.ini.j2
+    dest: /root/tsig.ini
+    mode: "700"
+
+- name: Get cert
+  ansible.builtin.command:
+    cmd: /root/certbot_tsig.sh
+
+- name: Crontab
+  ansible.builtin.template:
+    src: certbot_update_cert.j2
+    dest: /etc/cron.d/certbot_update_cert_tsig
+    mode: "700"
+
+- name: Restart and enable cron service
+  ansible.builtin.service:
+    name: cron
+    state: restarted
+    enabled: true
