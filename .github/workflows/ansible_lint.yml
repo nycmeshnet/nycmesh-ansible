@@ -7,7 +7,7 @@ jobs:
     name: Ansible Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Run ansible-lint
         uses: ansible/ansible-lint@c629b235398065e24ff44b5f1138028642c74a03
         with:
