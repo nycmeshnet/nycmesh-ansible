@@ -1,0 +1,16 @@
+version: 2
+updates:
+- package-ecosystem: "pip"
+  directory: "/"
+  schedule:
+    interval: "cron"
+    cronjob: "41 10 * * *"
+  assignees:
+   - "james-otten"
+- package-ecosystem: "github-actions"
+  directory: "/"
+  schedule:
+    interval: "cron"
+    cronjob: "44 10 * * *"
+  assignees:
+   - "james-otten"
