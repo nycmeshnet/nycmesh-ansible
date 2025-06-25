@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Run ansible-lint
-        uses: ansible/ansible-lint@803b78df28dceb7cd7203d7456b95c65530b8d4d
+        uses: ansible/ansible-lint@155b48cfb6de1f9567136272b4ee4c185f4edcc7
         with:
           args: ""
           setup_python: "true"
