@@ -31,7 +31,7 @@
     update_cache: true
     pkg:
       - python3-pip
-      - python3.11-venv
+      - python3.13-venv
       - cron
 
 - name: Install certbot
