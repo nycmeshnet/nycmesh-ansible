@@ -31,16 +31,16 @@
     update_cache: true
     pkg:
       - python3-pip
-      - python3.11-venv
+      - python3.13-venv
       - cron
 
 - name: Install certbot
   ansible.builtin.pip:
     name:
-      # resolve bug https://github.com/certbot/certbot/issues/10185
-      - josepy==1.15.0
-      - certbot==2.11.0
-      - certbot-dns-rfc2136==2.11.0
+      # josepy 1.x references OpenSSL.crypto.X509Req, removed in cryptography >=46.
+      # certbot >=3 ships josepy 2.x, so no separate josepy pin is needed.
+      - certbot==5.10.0
+      - certbot-dns-rfc2136==5.10.0
     virtualenv: /root/certbot_venv_tsig
     virtualenv_command: python3 -m venv
 
